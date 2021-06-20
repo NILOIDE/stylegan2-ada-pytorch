@@ -33,7 +33,7 @@ if __name__ == "__main__":
     a = argparse.ArgumentParser()
     a.add_argument("--pathIn", help="path to video", default=r"C:\Users\Nil\Downloads\Alternate Realities.mp4")
     a.add_argument("--pathOut", help="path to images", default=r"C:\Users\Nil\PycharmProjects\StyleGAN2\data\Alternate_realities_2400")
-    a.add_argument("--maxIms", help="number of images to extract", type=int, default=20)
+    a.add_argument("--maxIms", help="number of images to extract", type=int, default=0)
     args = a.parse_args()
     print(args)
     extractImages(args.pathIn, args.pathOut, args.maxIms)
