@@ -10,6 +10,7 @@ DATA_SAVE_DIR = r"C:\Users\Nil\PycharmProjects\stylegan2-ada-pytorch\data\Altern
 
 
 def main(dataset_dir, data_save_dir, resolution, inter=cv2.INTER_AREA):
+    """ Find shortest side and crop largest square from center of that image without going out of bounds. """
     os.makedirs(str(data_save_dir), exist_ok=True)
     for filename in tqdm(os.listdir(dataset_dir)):
         img = cv2.imread(str(dataset_dir / filename))
@@ -32,6 +33,7 @@ def main(dataset_dir, data_save_dir, resolution, inter=cv2.INTER_AREA):
 
 
 def main_padded(dataset_dir, data_save_dir, resolution, im_zoom, inter=cv2.INTER_AREA):
+    """ Find largest side and padd other side such that image is square. Zoom into image to obtain center-crop"""
     os.makedirs(str(data_save_dir), exist_ok=True)
     for filename in tqdm(os.listdir(dataset_dir)):
         img = cv2.imread(str(dataset_dir / filename))
