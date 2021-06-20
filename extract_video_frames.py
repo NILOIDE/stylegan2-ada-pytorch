@@ -14,7 +14,7 @@ def extractImages(pathIn, pathOut, numIms):
     while success:
         vidcap.set(cv2.CAP_PROP_POS_MSEC, (count*1000))    # added this line
         success, image = vidcap.read()
-        save_path = str(Path(pathOut) / ("frame%d.png" % count))  # PNG FORMAT
+        save_path = str(Path(pathOut) / f"frame{count:07}.png" )  # PNG FORMAT
         print('Read a new frame: ', success, f'Saving as:  {save_path}')
         cv2.imwrite(save_path, image)     # save frame
         count = count + 1
