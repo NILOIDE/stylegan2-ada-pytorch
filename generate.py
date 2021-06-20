@@ -17,7 +17,7 @@ import dnnlib
 import numpy as np
 import PIL.Image
 import torch
-
+from pathlib import Path
 import legacy
 
 #----------------------------------------------------------------------------
@@ -83,6 +83,9 @@ def generate_images(
     with dnnlib.util.open_url(network_pkl) as f:
         G = legacy.load_network_pkl(f)['G_ema'].to(device) # type: ignore
 
+    sub_dir = str(Path(network_pkl).parts[-1])[:-4]
+    outdir = str(Path(outdir) / f"generated_{sub_dir}")
+    print("Saving to:", outdir)
     os.makedirs(outdir, exist_ok=True)
 
     # Synthesize the result of a W projection.
@@ -118,7 +121,7 @@ def generate_images(
         z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
         img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
         img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
-        PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
+        PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.jpg')
 
 
 #----------------------------------------------------------------------------
