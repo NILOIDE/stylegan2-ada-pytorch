@@ -12,6 +12,7 @@ import os
 import re
 from typing import List, Optional
 
+from pathlib import Path
 import click
 import dnnlib
 import numpy as np
@@ -130,15 +131,18 @@ def latent_walk(
             z += z_delta / steps_per_transition
             img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
             img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
-            z_walk.append(img[0].cpu().numpy())
+            img = img[0].cpu()
+            inv_idx = torch.arange(img.size(2) - 1, -1, -1).long()
+            img = img[:,:,inv_idx]
+            z_walk.append(img.numpy())
 
     # Create video from generated images
     w, h, c = z_walk[0].shape
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     seed_str = "".join([str(i) + '_' for i in seeds])
-    save_path = f'{outdir}latent_walk_{network_pkl[-10:-4]}_{seed_str}_{steps_per_transition}.mp4'
-    print("Saving to:", save_path)
-    video = cv2.VideoWriter(save_path, fourcc, 30.0, (h, w))
+    save_path = Path(outdir) / f'latent_walk_{network_pkl[-10:-4]}_{seed_str}_{steps_per_transition}.mp4'
+    print("Saving to:", str(save_path))
+    video = cv2.VideoWriter(str(save_path), fourcc, 30.0, (h, w))
     for im in z_walk:
         # draw frame specific stuff here.
         video.write(im)
